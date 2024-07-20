@@ -51,11 +51,11 @@ library.add(faHome, faFile, faBell, faAngleDown);
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
 
 .navbar {
-  height: 8vh;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,7 +121,8 @@ library.add(faHome, faFile, faBell, faAngleDown);
 
 .body-container {
   display: flex;
-  height: calc(100vh - 10vh);
+  min-height: calc(100vh - 100px);
+  margin-top: 0;
 }
 
 .sidebar {
@@ -129,7 +130,7 @@ library.add(faHome, faFile, faBell, faAngleDown);
   box-shadow: 8px 0 16px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  padding-top: 2vh;
+  padding-top: 25px;
 }
 
 .sidebar-item {

@@ -32,9 +32,9 @@
             </div>
             <div class="card-container">
               <div class="card">
-                <h2 class="card-content">
+                <h3 class="card-content">
                   {{ meeting.roomName }}
-                </h2>
+                </h3>
                 <div class="chart-container">
                   <div>
                     <strong class="card-text">Persentase Pemakaian</strong>
@@ -249,12 +249,12 @@ const renderCharts = async () => {
 }
 
 .dashboard-icon {
-  font-size: 32px;
-  margin-right: 10px;
+  font-size: 28px;
+  margin-right: 8px;
 }
 
 .dashboard-text {
-  font-size: 1.5rem;
+  font-size: 1.25rem; 
   font-weight: bold;
 }
 
@@ -278,25 +278,25 @@ const renderCharts = async () => {
 
 .month-dropdown {
   width: 100%;
-  max-width: 300px;
+  max-width: 250px; 
 }
 
 .unit-induk-section {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .unit-column-wrapper {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 16px; 
+  gap: 12px; 
 }
 
 .unit-column {
-  flex: 1 1 calc(20% - 16px);
+  flex: 1 1 calc(20% - 12px); 
   box-sizing: border-box;
-  margin-bottom: 32px;
-  max-width: calc(20% - 16px);
+  margin-bottom: 24px; 
+  max-width: calc(20% - 12px); 
 }
 
 .unit-section {
@@ -308,14 +308,14 @@ const renderCharts = async () => {
 .unit-header {
   display: flex;
   align-items: center;
-  font-size: 24px;
+  font-size: 20px;
   color: gray;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .unit-icon {
-  font-size: 20px;
-  margin-right: 8px;
+  font-size: 18px; 
+  margin-right: 6px;
 }
 
 .unit-label {
@@ -333,20 +333,14 @@ const renderCharts = async () => {
   display: flex;
   background-color: whitesmoke;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
   flex-direction: column;
   border-radius: 8px;
-  padding: 16px 20px;
-  min-width: 400px;
-  max-width: 400px;
-}
-
-.card-title {
-  margin: 0 0 8px;
+  padding: 12px 16px; 
+  min-width: 250px; 
+  max-width: 100%; 
 }
 
 .card-text {
-  font-size: 18px;
   color: gray;
 }
 
@@ -368,35 +362,30 @@ const renderCharts = async () => {
   margin: 8px 0;
 }
 
-.nominal-amount {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
 .chart {
-  width: 100px;
-  height: 100px;
+  width: 80px; 
+  height: 80px;
 }
 
 .percentNominal {
-  font-size: 2rem;
-  font-weight: bolder;
+  font-size: 1.75rem;
+  font-weight: bold; 
 }
 
 .item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px; 
 }
 
 .item-label {
-  font-size: 1.2rem;
+  font-size: 1rem; 
 }
 
 .item-details {
   display: flex;
-  align-items: start;
+  align-items: center;
   flex-direction: column;
   width: 50%;
 }
@@ -404,7 +393,7 @@ const renderCharts = async () => {
 .loading-bar {
   position: relative;
   width: 100%;
-  height: 16px;
+  height: 12px;
   background-color: #d3d3d3;
   border-radius: 5px;
   overflow: hidden;
@@ -418,8 +407,8 @@ const renderCharts = async () => {
 }
 
 .quantity {
-  margin-right: 16px;
-  font-size: 1.2rem;
+  margin-right: 12px;
+  font-size: 1rem;
   font-weight: bold;
 }
 
@@ -427,5 +416,27 @@ const renderCharts = async () => {
   margin: 8px 0;
   width: 10px;
   height: 50px;
+}
+
+@media (max-width: 768px) {
+  .unit-column {
+    flex: 1 1 calc(50% - 16px);
+    max-width: calc(50% - 16px);
+  }
+
+  .card {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .unit-column {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .item-details {
+    width: 100%;
+  }
 }
 </style>

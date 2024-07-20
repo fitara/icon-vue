@@ -616,4 +616,25 @@ watch(selectedRoomId, (newId) => {
 .form-actions .save-button:hover {
   background-color: #025f6d;
 }
+
+.swal2-confirm {
+  background-color: #009fb5 !important;
+  color: white !important; 
+  border-radius: 10px;
+  width: 150px;
+}
+
+.swal2-cancel {
+  background-color: red !important; 
+  color: white !important; 
+  border-radius: 10px; 
+}
+
+/* .swal2-title {
+  color: #027887; 
+} */
+
+.swal2-content {
+  color: #333;
+}
 </style>
