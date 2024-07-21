@@ -3,8 +3,8 @@ import Dashboard from "../views/Dashboard.vue";
 import Meeting from "../views/Meeting.vue";
 
 const routes = [
-  { path: "/", redirect: "/dashboard" },
-  { path: "/dashboard", name: "Dashboard", component: Dashboard },
+  { path: "/", component: Dashboard },
+  { path: "/dashboard", name: "dashboard", component: Dashboard },
   { path: "/meeting/:view?", name: "Meeting", component: Meeting },
 ];
 
