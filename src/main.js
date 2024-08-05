@@ -10,10 +10,12 @@ import {
   faFile,
   faGear,
   faAngleLeft,
+  faAngleRight,
+  faPlus
 } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-free/css/all.css";
 
-library.add(faHome, faFile, faGear, faAngleLeft);
+library.add(faHome, faFile, faGear, faAngleLeft, faAngleRight, faPlus);
 
 const pinia = createPinia();
 const app = createApp(App);

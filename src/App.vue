@@ -2,10 +2,10 @@
   <div class="app">
     <div class="navbar">
       <div class="content-container">
-        <div class="content-left">
+        <router-link to="/" class="content-left">
           <img :src="logo" alt="Logo" class="logo" />
           <p class="logo-text">iMeeting</p>
-        </div>
+        </router-link>
         <div class="content-right">
           <font-awesome-icon :icon="['far', 'bell']" class="navbar-icon" />
           <div class="profile">
@@ -14,7 +14,7 @@
           </div>
           <font-awesome-icon
             :icon="['fas', 'angle-down']"
-            class="navbar-icon"
+            class="navbar-icon angle-down-icon"
           />
         </div>
       </div>
@@ -55,7 +55,7 @@ library.add(faHome, faFile, faBell, faAngleDown);
 }
 
 .navbar {
-  height: 90px;
+  height: 4.25em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,12 +70,14 @@ library.add(faHome, faFile, faBell, faAngleDown);
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  margin: 0 30px;
+  margin: 0 1.25em;
 }
 
 .content-left {
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .content-right {
@@ -85,76 +87,79 @@ library.add(faHome, faFile, faBell, faAngleDown);
 }
 
 .logo {
-  width: 50px;
+  width: 2.5em;
   height: auto;
-  margin-right: 8px;
+  margin-right: 1em;
 }
 
 .logo-text {
-  margin-left: 10px;
-  letter-spacing: 2px;
-  font-size: 1.5rem;
+  margin-left: 0.5em;
+  letter-spacing: 0.125em;
   font-weight: bold;
   color: white;
 }
 
 .navbar-icon {
-  font-size: 24px;
-  margin: 0 10px;
+  font-size: 1em;
+}
+
+.angle-down-icon {
+  font-size: 0.75em;
 }
 
 .profile {
   display: flex;
   align-items: center;
-  margin: 0 16px;
+  margin: 0 1.25em;
 }
 
 .profile-pict {
-  width: 50px;
+  width: 2.5em;
   border-radius: 50%;
-  margin: 0 8px;
+  margin: 0 0.5em;
 }
 
 .profile-name {
-  font-weight: bold;
+  font-size: 0.85em;
 }
 
 .body-container {
   display: flex;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 6.25em);
   margin-top: 0;
 }
 
 .sidebar {
-  width: 90px;
-  box-shadow: 8px 0 16px rgba(0, 0, 0, 0.1);
   display: flex;
+  width: 4.25em;
+  box-shadow: 0.5em 0 1em rgba(0, 0, 0, 0.1);
   flex-direction: column;
-  padding-top: 25px;
+  padding-top: 1.5em;
 }
 
 .sidebar-item {
   display: flex;
-  padding: 10px;
-  margin: 8px 20px;
   align-items: center;
-  border-radius: 10px;
+  justify-content: center;
+  height: 2.5em;
+  margin: 0.25em 0.75em;
+  border-radius: 0.5em;
   color: gray;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar-item:hover {
-  background-color: #027887;
   color: white;
+  background-color: #027887;
 }
 
 .sidebar-icon {
-  font-size: 24px;
-  margin: 0 auto;
+  font-size: 1em;
 }
 
 .main-content {
   flex: 1;
-  margin: 24px;
+  margin: 1.5em;
   overflow-y: auto;
 }
 </style>

@@ -1,133 +1,174 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useMeetingStore = defineStore("meetingStore", {
   state: () => ({
     meetings: [
       {
-        officeId: "1",
-        roomId: "1",
-        roomName: "Apollo Room",
-        roomCapacity: 50,
-        participantCount: 40,
-        tanggalRapat: "2024-08-01",
-        waktuMulai: "09:00",
-        waktuSelesai: "11:00",
-        autoChecked: { snackPagi: true, makanSiang: false, snackSore: false },
-        totalNominal: 800000,
-        snackPagiCount: 40,
-        makanSiangCount: 0,
-        snackSoreCount: 0,
+        "id": "100",
+        "officeId": "1",
+        "roomName": "Apollo Room",
+        "roomCapacity": 50,
+        "participantCount": 40,
+        "meetingDate": "2024-08-01",
+        "startTime": "09:00",
+        "finishTime": "13:00",
+        "autoChecked": { "snackPagi": true, "makanSiang": true, "snackSore": false },
+        "totalNominal": 1200000,
+        "snackPagiCount": 40,
+        "makanSiangCount": 40,
+        "snackSoreCount": 0
       },
       {
-        officeId: "2",
-        roomId: "2",
-        roomName: "Zenith Hall",
-        roomCapacity: 30,
-        participantCount: 20,
-        tanggalRapat: "2024-08-02",
-        waktuMulai: "13:00",
-        waktuSelesai: "15:00",
-        autoChecked: { snackPagi: false, makanSiang: true, snackSore: false },
-        totalNominal: 600000,
-        snackPagiCount: 0,
-        makanSiangCount: 20,
-        snackSoreCount: 0,
+        "id": "101",
+        "officeId": "2",
+        "roomName": "Zenith Hall",
+        "roomCapacity": 30,
+        "participantCount": 20,
+        "meetingDate": "2024-08-02",
+        "startTime": "11:15",
+        "finishTime": "15:00",
+        "autoChecked": { "snackPagi": false, "makanSiang": true, "snackSore": true },
+        "totalNominal": 800000,
+        "snackPagiCount": 0,
+        "makanSiangCount": 20,
+        "snackSoreCount": 20
       },
       {
-        officeId: "3",
-        roomId: "3",
-        roomName: "Nebula Suite",
-        roomCapacity: 40,
-        participantCount: 35,
-        tanggalRapat: "2024-08-03",
-        waktuMulai: "10:00",
-        waktuSelesai: "12:00",
-        autoChecked: { snackPagi: true, makanSiang: false, snackSore: false },
-        totalNominal: 700000,
-        snackPagiCount: 35,
-        makanSiangCount: 0,
-        snackSoreCount: 0,
+        "id": "102",
+        "officeId": "3",
+        "roomName": "Nebula Suite",
+        "roomCapacity": 40,
+        "participantCount": 35,
+        "meetingDate": "2024-08-03",
+        "startTime": "10:00",
+        "finishTime": "13:00",
+        "autoChecked": { "snackPagi": true, "makanSiang": true, "snackSore": false },
+        "totalNominal": 1050000,
+        "snackPagiCount": 35,
+        "makanSiangCount": 35,
+        "snackSoreCount": 0
       },
       {
-        officeId: "4",
-        roomId: "4",
-        roomName: "Celestial Lounge",
-        roomCapacity: 20,
-        participantCount: 15,
-        tanggalRapat: "2024-08-04",
-        waktuMulai: "14:00",
-        waktuSelesai: "16:00",
-        autoChecked: { snackPagi: false, makanSiang: true, snackSore: false },
-        totalNominal: 450000,
-        snackPagiCount: 0,
-        makanSiangCount: 15,
-        snackSoreCount: 0,
+        "id": "103",
+        "officeId": "4",
+        "roomName": "Celestial Lounge",
+        "roomCapacity": 20,
+        "participantCount": 15,
+        "meetingDate": "2024-08-04",
+        "startTime": "13:45",
+        "finishTime": "16:00",
+        "autoChecked": { "snackPagi": false, "makanSiang": true, "snackSore": true },
+        "totalNominal": 450000,
+        "snackPagiCount": 0,
+        "makanSiangCount": 15,
+        "snackSoreCount": 15
       },
       {
-        officeId: "5",
-        roomId: "5",
-        roomName: "Nova Space",
-        roomCapacity: 60,
-        participantCount: 50,
-        tanggalRapat: "2024-08-05",
-        waktuMulai: "11:00",
-        waktuSelesai: "13:00",
-        autoChecked: { snackPagi: true, makanSiang: true, snackSore: false },
-        totalNominal: 1500000,
-        snackPagiCount: 50,
-        makanSiangCount: 50,
-        snackSoreCount: 0,
+        "id": "104",
+        "officeId": "5",
+        "roomName": "Nova Space",
+        "roomCapacity": 60,
+        "participantCount": 50,
+        "meetingDate": "2024-08-05",
+        "startTime": "11:00",
+        "finishTime": "13:00",
+        "autoChecked": { "snackPagi": false, "makanSiang": true, "snackSore": false },
+        "totalNominal": 1000000,
+        "snackPagiCount": 0,
+        "makanSiangCount": 50,
+        "snackSoreCount": 0
       },
       {
-        officeId: "6",
-        roomId: "6",
-        roomName: "Eclipse Room",
-        roomCapacity: 25,
-        participantCount: 20,
-        tanggalRapat: "2024-08-06",
-        waktuMulai: "15:00",
-        waktuSelesai: "17:00",
-        autoChecked: { snackPagi: false, makanSiang: true, snackSore: true },
-        totalNominal: 900000,
-        snackPagiCount: 0,
-        makanSiangCount: 20,
-        snackSoreCount: 20,
+        "id": "105",
+        "officeId": "3",
+        "roomName": "Eclipse Room",
+        "roomCapacity": 25,
+        "participantCount": 20,
+        "meetingDate": "2024-08-06",
+        "startTime": "13:50",
+        "finishTime": "17:00",
+        "autoChecked": { "snackPagi": false, "makanSiang": true, "snackSore": true },
+        "totalNominal": 600000,
+        "snackPagiCount": 0,
+        "makanSiangCount": 20,
+        "snackSoreCount": 20
       },
       {
-        officeId: "7",
-        roomId: "7",
-        roomName: "Lunar Center",
-        roomCapacity: 65,
-        participantCount: 53,
-        tanggalRapat: "2024-08-06",
-        waktuMulai: "15:00",
-        waktuSelesai: "17:00",
-        autoChecked: { snackPagi: false, makanSiang: true, snackSore: true },
-        totalNominal: 900000,
-        snackPagiCount: 0,
-        makanSiangCount: 20,
-        snackSoreCount: 20,
+        "id": "106",
+        "officeId": "1",
+        "roomName": "Lunar Center",
+        "roomCapacity": 65,
+        "participantCount": 53,
+        "meetingDate": "2024-08-06",
+        "startTime": "13:00",
+        "finishTime": "15:00",
+        "autoChecked": { "snackPagi": false, "makanSiang": true, "snackSore": true },
+        "totalNominal": 800000,
+        "snackPagiCount": 0,
+        "makanSiangCount": 53,
+        "snackSoreCount": 0
       },
       {
-        officeId: "8",
-        roomId: "8",
-        roomName: "Galaxy Lounge",
-        roomCapacity: 125,
-        participantCount: 89,
-        tanggalRapat: "2024-08-06",
-        waktuMulai: "15:00",
-        waktuSelesai: "17:00",
-        autoChecked: { snackPagi: false, makanSiang: true, snackSore: true },
-        totalNominal: 900000,
-        snackPagiCount: 0,
-        makanSiangCount: 20,
-        snackSoreCount: 20,
-      },
+        "id": "107",
+        "officeId": "4",
+        "roomName": "Galaxy Lounge",
+        "roomCapacity": 125,
+        "participantCount": 89,
+        "meetingDate": "2024-08-06",
+        "startTime": "10:00",
+        "finishTime": "14:00",
+        "autoChecked": { "snackPagi": true, "makanSiang": true, "snackSore": true },
+        "totalNominal": 1300000,
+        "snackPagiCount": 89,
+        "makanSiangCount": 89,
+        "snackSoreCount": 89
+      }
     ],
+    offices: [],
+    rooms: [],
   }),
+
   actions: {
-    saveMeetingData(meetingData) {
-      this.meetings.push(meetingData);
+    async fetchOffices() {
+      try {
+        const response = await axios.get("https://6666c7aea2f8516ff7a4e261.mockapi.io/api/dummy-data/masterOffice");
+        this.offices = response.data;
+      } catch (error) {
+        console.error("Error fetching offices:", error);
+      }
     },
+
+    async fetchRooms() {
+      try {
+        const response = await axios.get("https://6666c7aea2f8516ff7a4e261.mockapi.io/api/dummy-data/masterMeetingRooms");
+        this.rooms = response.data;
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      }
+    },
+
+    async fetchAllData() {
+      try {
+        await Promise.all([
+          this.fetchOffices(),
+          this.fetchRooms(),
+        ]);
+      } catch (error) {
+        console.error("Error fetching all data:", error);
+      }
+    },
+
+    async saveMeetingData(data) {
+      try {
+        this.meetings.push(data);
+      } catch (error) {
+        console.error("Error saving meeting data:", error);
+      }
+    },
+  },
+
+  getters: {
+    totalParticipants: (state) => state.meetings.reduce((sum, meeting) => sum + meeting.participantCount, 0),
   },
 });

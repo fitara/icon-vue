@@ -18,17 +18,17 @@
       ></v-select>
     </div>
 
+    <!-- {{ meetings }} -->
+
     <div class="unit-induk-section">
       <div class="unit-column-wrapper">
-        <div
-          v-for="meeting in meetings"
-          :key="meeting.roomId"
-          class="unit-column"
-        >
+        <div v-for="meeting in meetings" :key="meeting.id" class="unit-column">
           <div class="unit-section">
             <div class="unit-header">
               <font-awesome-icon :icon="['fas', 'bolt']" class="unit-icon" />
-              <label class="unit-label">UNIT INDUK {{ meeting.officeId }}</label>
+              <label class="unit-label"
+                >UNIT INDUK {{ meeting.officeId }}</label
+              >
             </div>
             <div class="card-container">
               <div class="card">
@@ -38,11 +38,13 @@
                 <div class="chart-container">
                   <div>
                     <strong class="card-text">Persentase Pemakaian</strong>
-                    <p class="percentNominal">{{ calculateUsagePercentage(meeting) }}%</p>
+                    <p class="percentNominal">
+                      {{ calculateUsagePercentage(meeting) }}%
+                    </p>
                   </div>
                   <div class="chart">
                     <canvas
-                      :id="'chart-' + meeting.roomId"
+                      :id="'chart-' + meeting.id"
                       width="200"
                       height="200"
                     ></canvas>
@@ -63,8 +65,13 @@
                     <div class="loading-bar">
                       <div
                         class="loading-bar-fill"
-                        :style="
-                        { width: calculateSnackPercentage(meeting.snackPagiCount, meeting.roomCapacity) + '%', }"
+                        :style="{
+                          width:
+                            calculateSnackPercentage(
+                              meeting.snackPagiCount,
+                              meeting.roomCapacity
+                            ) + '%',
+                        }"
                       ></div>
                     </div>
                   </div>
@@ -79,8 +86,13 @@
                     <div class="loading-bar">
                       <div
                         class="loading-bar-fill"
-                        :style="
-                        { width: calculateLunchPercentage(meeting.makanSiangCount, meeting.roomCapacity) + '%', }"
+                        :style="{
+                          width:
+                            calculateLunchPercentage(
+                              meeting.makanSiangCount,
+                              meeting.roomCapacity
+                            ) + '%',
+                        }"
                       ></div>
                     </div>
                   </div>
@@ -95,8 +107,13 @@
                     <div class="loading-bar">
                       <div
                         class="loading-bar-fill"
-                        :style="
-                        { width: calculateEveningSnackPercentage(meeting.snackSoreCount, meeting.roomCapacity) + '%', }"
+                        :style="{
+                          width:
+                            calculateEveningSnackPercentage(
+                              meeting.snackSoreCount,
+                              meeting.roomCapacity
+                            ) + '%',
+                        }"
                       ></div>
                     </div>
                   </div>
@@ -198,9 +215,12 @@ const calculateEveningSnackPercentage = (eveningSnackCount, roomCapacity) => {
 const renderCharts = async () => {
   await nextTick();
   setTimeout(() => {
+    console.log('Existing canvas elements:', document.querySelectorAll('canvas'));
     meetings.value.forEach((meeting) => {
-      const doughnutId = `chart-${meeting.roomId}`;
+      const doughnutId = `chart-${meeting.id}`;
+      console.log(`Canvas element with ID ${doughnutId}:`, document.getElementById(doughnutId));
       const ctxDoughnut = document.getElementById(doughnutId)?.getContext("2d");
+      
       if (ctxDoughnut) {
         new Chart(ctxDoughnut, {
           type: "doughnut",
@@ -237,8 +257,12 @@ const renderCharts = async () => {
 </script>
 
 <style>
+.v-field__input {
+  width: 12em;
+}
+
 .dashboard {
-  padding: 16px;
+  padding: 1em;
   position: relative;
 }
 
@@ -249,24 +273,24 @@ const renderCharts = async () => {
 }
 
 .dashboard-icon {
-  font-size: 28px;
-  margin-right: 8px;
+  font-size: 1.75em;
+  margin-right: 0.5em;
 }
 
 .dashboard-text {
-  font-size: 1.25rem; 
+  font-size: 1.25rem;
   font-weight: bold;
 }
 
 .underline {
-  margin-top: 16px;
+  margin-top: 1em;
   width: 100%;
-  height: 1px;
+  height: 0.0625em;
   background-color: lightgrey;
 }
 
 .period-section {
-  margin-top: 16px;
+  margin-top: 1em;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -276,27 +300,22 @@ const renderCharts = async () => {
   color: #505050;
 }
 
-.month-dropdown {
-  width: 100%;
-  max-width: 250px; 
-}
-
 .unit-induk-section {
-  margin-top: 24px;
+  margin-top: 1.5em;
 }
 
 .unit-column-wrapper {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 12px; 
+  gap: 0.75em;
 }
 
 .unit-column {
-  flex: 1 1 calc(20% - 12px); 
+  flex: 1 1 calc(20% - 0.75em);
   box-sizing: border-box;
-  margin-bottom: 24px; 
-  max-width: calc(20% - 12px); 
+  margin-bottom: 1.5em;
+  max-width: calc(20% - 0.75em);
 }
 
 .unit-section {
@@ -308,14 +327,14 @@ const renderCharts = async () => {
 .unit-header {
   display: flex;
   align-items: center;
-  font-size: 20px;
+  font-size: 1.25em;
   color: gray;
-  margin-bottom: 6px;
+  margin-bottom: 0.375em;
 }
 
 .unit-icon {
-  font-size: 18px; 
-  margin-right: 6px;
+  font-size: 1.125em;
+  margin-right: 0.375em;
 }
 
 .unit-label {
@@ -332,12 +351,12 @@ const renderCharts = async () => {
 .card {
   display: flex;
   background-color: whitesmoke;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, 0.1);
   flex-direction: column;
-  border-radius: 8px;
-  padding: 12px 16px; 
-  min-width: 250px; 
-  max-width: 100%; 
+  border-radius: 0.5em;
+  padding: 0.75em 1em;
+  min-width: 15.625em;
+  max-width: 100%;
 }
 
 .card-text {
@@ -345,7 +364,7 @@ const renderCharts = async () => {
 }
 
 .card-content {
-  margin-bottom: 4px;
+  margin-bottom: 0.25em;
   color: #505050;
 }
 
@@ -359,28 +378,28 @@ const renderCharts = async () => {
 .nominal-consumption {
   display: flex;
   flex-direction: column;
-  margin: 8px 0;
+  margin: 0.5em 0;
 }
 
 .chart {
-  width: 80px; 
-  height: 80px;
+  width: 5em;
+  height: 5em;
 }
 
 .percentNominal {
   font-size: 1.75rem;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px; 
+  margin-bottom: 0.75em;
 }
 
 .item-label {
-  font-size: 1rem; 
+  font-size: 1rem;
 }
 
 .item-details {
@@ -393,9 +412,9 @@ const renderCharts = async () => {
 .loading-bar {
   position: relative;
   width: 100%;
-  height: 12px;
+  height: 0.75em;
   background-color: #d3d3d3;
-  border-radius: 5px;
+  border-radius: 0.3125em;
   overflow: hidden;
 }
 
@@ -407,21 +426,21 @@ const renderCharts = async () => {
 }
 
 .quantity {
-  margin-right: 12px;
+  margin-right: 0.75em;
   font-size: 1rem;
   font-weight: bold;
 }
 
 .bar-chart {
-  margin: 8px 0;
-  width: 10px;
-  height: 50px;
+  margin: 0.5em 0;
+  width: 0.625em;
+  height: 3.125em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .unit-column {
-    flex: 1 1 calc(50% - 16px);
-    max-width: calc(50% - 16px);
+    flex: 1 1 calc(50% - 1em);
+    max-width: calc(50% - 1em);
   }
 
   .card {
@@ -429,7 +448,7 @@ const renderCharts = async () => {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30em) {
   .unit-column {
     flex: 1 1 100%;
     max-width: 100%;

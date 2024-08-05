@@ -2,44 +2,46 @@
   <div class="meeting-container">
     <div class="meeting-header">
       <div class="back-and-title">
-        <div v-if="isPesanRuangan" class="back-button-wrapper" @click="goBack">
+        <div v-if="isBookRoom" class="back-button-wrapper" @click="goBack">
           <button class="back-button">
             <font-awesome-icon :icon="['fas', 'angle-left']" />
           </button>
         </div>
         <div class="title-and-path">
-          <div v-if="!isPesanRuangan" class="title-only">
+          <div v-if="!isBookRoom" class="title-only">
             <h1 class="inline-title">Ruang Meeting</h1>
-            <router-link to="/meeting" class="meeting-path"
-              >Ruang Meeting</router-link
-            >
+            <div class="meeting-path">
+              <span class="active">Ruang Meeting</span>
+            </div>
           </div>
-          <div v-if="isPesanRuangan" class="title-path-container">
+          <div v-if="isBookRoom" class="title-path-container">
             <h1 class="inline-title">Ruang Meeting</h1>
-            <div class="meeting-path">Ruang Meeting > Pesan Ruangan</div>
+            <div class="meeting-path">
+              <router-link to="/meeting" style="text-decoration: none">
+                <span :class="{ active: !isBookRoom }">Ruang Meeting</span>
+              </router-link>
+              <font-awesome-icon :icon="['fas', 'angle-right']" size="sm" />
+              <span :class="{ active: isBookRoom }">Pesan Ruangan</span>
+            </div>
           </div>
         </div>
       </div>
       <router-link
-        v-if="!isPesanRuangan"
+        v-if="!isBookRoom"
         class="pesan-button"
         to="/meeting/pesan-ruangan"
       >
         <font-awesome-icon :icon="['fas', 'plus']" /> Pesan Ruangan
       </router-link>
     </div>
-    <div v-if="isPesanRuangan" class="form-container">
+    <div v-if="isBookRoom" class="form-container">
       <form class="meeting-form">
-        <h2>Informasi Ruang Meeting</h2>
+        <h3>Informasi Ruang Meeting</h3>
         <div class="form-row">
           <div class="form-column">
             <div class="form-group">
               <label for="unit">Unit</label>
-              <select
-                id="unit"
-                v-model="selectedOfficeId"
-                class="custom-select"
-              >
+              <select id="unit" v-model="selectedOfficeId" required>
                 <option value="" disabled>Pilih Unit</option>
                 <option
                   v-for="office in offices"
@@ -59,6 +61,7 @@
                 v-model="selectedRoomId"
                 class="custom-select"
                 :disabled="!selectedOfficeId"
+                required
               >
                 <option value="" disabled>Pilih Ruang Meeting</option>
                 <option
@@ -73,50 +76,54 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="kapasitas">Kapasitas</label>
+          <label for="capicity">Kapasitas</label>
           <input
             type="number"
-            id="kapasitas"
+            id="capicity"
             v-model="selectedRoomCapacity"
-            readonly
             style="background-color: lightgray"
+            readonly
           />
         </div>
 
         <hr class="form-divider" />
 
-        <h2>Informasi Rapat</h2>
+        <h3>Informasi Rapat</h3>
         <div class="form-row">
           <div class="form-column">
             <div class="form-group">
-              <label for="tanggalRapat">Tanggal Rapat</label>
-              <input type="date" id="tanggalRapat" v-model="tanggalRapat" />
+              <label for="meetingDate">Tanggal Rapat</label>
+              <input type="date" id="meetingDate" v-model="meetingDate" />
             </div>
           </div>
           <div class="form-column">
             <div class="form-group">
-              <label for="waktuMulai">Waktu Mulai</label>
-              <input type="time" id="waktuMulai" v-model="waktuMulai" />
+              <label for="startTime">Waktu Mulai</label>
+              <input type="time" id="startTime" v-model="startTime" />
             </div>
           </div>
           <div class="form-column">
             <div class="form-group">
-              <label for="waktuSelesai">Waktu Selesai</label>
-              <input type="time" id="waktuSelesai" v-model="waktuSelesai" />
+              <label for="finishTime">Waktu Selesai</label>
+              <input type="time" id="finishTime" v-model="finishTime" />
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label for="jumlahPeserta">Jumlah Peserta</label>
+          <label for="participantCount">Jumlah Peserta</label>
           <input
-            type="number"
-            id="jumlahPeserta"
-            placeholder="Masukkan Jumlah Peserta"
+            min="1"
+            max="100"
+            id="participantCount"
+            type="text"
             v-model="participantCount"
+            onfocus="(this.type='number')"
+            onblur="(this.type='text')"
+            placeholder="Masukan Jumlah Peserta"
           />
         </div>
         <div class="form-group checkbox-group">
-          <label>Jenis Konsumsi</label>
+          <label>Konsumsi Rapat</label>
           <div class="checkbox-item">
             <input type="checkbox" v-model="autoChecked.snackPagi" />
             <label for="snackSiang">Snack Siang</label>
@@ -139,10 +146,12 @@
               :value="formatNominal(totalNominal)"
               class="input-field"
               readonly
-              style="background-color: lightgray"
             />
           </div>
         </div>
+
+        <hr class="form-divider" />
+
         <div class="form-actions">
           <button type="button" class="cancel-button" @click="goBack">
             Batal
@@ -157,124 +166,119 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { ref, computed, onMounted, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPlus, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { useMeetingStore } from "../stores/meetingStore";
-import Swal from "sweetalert2";
-
-library.add(faPlus, faAngleLeft);
+import { ref, computed, onMounted, watch } from 'vue';
+import { useMeetingStore } from '../stores/meetingStore';
+import { useRoute, useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 const route = useRoute();
 const router = useRouter();
-
 const meetingStore = useMeetingStore();
 
-const isPesanRuangan = computed(() => route.params.view === "pesan-ruangan");
+const isBookRoom = computed(() => route.params.view === 'pesan-ruangan');
+const isLoading = ref(true);
 
 const offices = ref([]);
 const rooms = ref([]);
-const selectedRoomName = ref("");
-const selectedOfficeId = ref("");
-const selectedRoomId = ref("");
+const selectedRoomName = ref('');
+const selectedOfficeId = ref('');
+const selectedRoomId = ref('');
 const selectedRoomCapacity = ref(0);
 const participantCount = ref(0);
-const tanggalRapat = ref("");
-const waktuMulai = ref("");
-const waktuSelesai = ref("");
+const meetingDate = ref('');
+const startTime = ref('');
+const finishTime = ref('');
 const autoChecked = ref({
   snackPagi: false,
   makanSiang: false,
   snackSore: false,
 });
 const totalNominal = ref(0);
+const lastId = ref(0);
 
 const filteredRooms = computed(() => {
   const officeId = selectedOfficeId.value;
   if (!officeId) {
     return [];
   }
-  return rooms.value.filter((room) => room.officeId === officeId);
+  return rooms.value.filter(room => room.officeId === officeId);
 });
 
 const validateForm = () => {
   if (!selectedOfficeId.value) {
     Swal.fire({
-      icon: "error",
-      title: "Input Kosong",
-      text: "Silakan pilih Unit.",
+      icon: 'error',
+      title: 'Input Kosong',
+      text: 'Silakan pilih Unit.',
     });
     return false;
   }
   if (!selectedRoomId.value) {
     Swal.fire({
-      icon: "error",
-      title: "Input Kosong",
-      text: "Silakan pilih Room.",
+      icon: 'error',
+      title: 'Input Kosong',
+      text: 'Silakan pilih Room.',
     });
     return false;
   }
-  if (!tanggalRapat.value) {
+  if (!meetingDate.value) {
     Swal.fire({
-      icon: "error",
-      title: "Input Kosong",
-      text: "Silakan pilih Tanggal Rapat.",
+      icon: 'error',
+      title: 'Input Kosong',
+      text: 'Silakan pilih Tanggal Rapat.',
     });
     return false;
   }
-  const today = new Date().toISOString().split("T")[0];
-  if (tanggalRapat.value <= today) {
+  const today = new Date().toISOString().split('T')[0];
+  if (meetingDate.value <= today) {
     Swal.fire({
-      icon: "error",
-      title: "Tanggal Tidak Valid",
-      text: "Tanggal rapat tidak boleh hari ini atau sebelumnya.",
+      icon: 'error',
+      title: 'Tanggal Tidak Valid',
+      text: 'Tanggal rapat tidak boleh hari ini atau sebelumnya.',
     });
     return false;
   }
 
-  if (!waktuMulai.value) {
+  if (!startTime.value) {
     Swal.fire({
-      icon: "error",
-      title: "Input Kosong",
-      text: "Silakan pilih Waktu mulai meeting.",
+      icon: 'error',
+      title: 'Input Kosong',
+      text: 'Silakan pilih Waktu mulai meeting.',
     });
     return false;
   }
-  if (!waktuSelesai.value) {
+  if (!finishTime.value) {
     Swal.fire({
-      icon: "error",
-      title: "Input Kosong",
-      text: "Silakan pilih waktu selesai.",
+      icon: 'error',
+      title: 'Input Kosong',
+      text: 'Silakan pilih waktu selesai.',
     });
     return false;
   }
-  const startTime = new Date(`1970-01-01T${waktuMulai.value}:00`);
-  const endTime = new Date(`1970-01-01T${waktuSelesai.value}:00`);
-  if (endTime <= startTime) {
+  const start = new Date(`1970-01-01T${startTime.value}:00`);
+  const end = new Date(`1970-01-01T${finishTime.value}:00`);
+  if (end <= start) {
     Swal.fire({
-      icon: "error",
-      title: "Waktu Tidak Valid",
-      text: "Waktu selesai tidak mungkin mundur dari waktu mulai.",
+      icon: 'error',
+      title: 'Waktu Tidak Valid',
+      text: 'Waktu selesai tidak mungkin mundur dari waktu mulai.',
     });
     return false;
   }
 
   if (!participantCount.value) {
     Swal.fire({
-      icon: "error",
-      title: "Input Kosong",
-      text: "Silakan masukkan jumlah peserta.",
+      icon: 'error',
+      title: 'Input Kosong',
+      text: 'Silakan masukkan jumlah peserta.',
     });
     return false;
   }
   if (participantCount.value > selectedRoomCapacity.value) {
     Swal.fire({
-      icon: "error",
-      title: "Jumlah Melebihi Kapasitas",
-      text: "Jumlah peserta tidak boleh lebih besar dari kapasitas ruangan.",
+      icon: 'error',
+      title: 'Jumlah Melebihi Kapasitas',
+      text: 'Jumlah peserta tidak boleh lebih besar dari kapasitas ruangan.',
     });
     return false;
   }
@@ -285,13 +289,12 @@ const validateForm = () => {
 const handleSubmit = (e) => {
   e.preventDefault();
   if (validateForm()) {
-    const startTime = new Date(`1970-01-01T${waktuMulai.value}:00`);
-    const endTime = new Date(`1970-01-01T${waktuSelesai.value}:00`);
+    const start = new Date(`1970-01-01T${startTime.value}:00`);
+    const end = new Date(`1970-01-01T${finishTime.value}:00`);
 
-    autoChecked.value.snackPagi = startTime.getHours() < 11;
-    autoChecked.value.makanSiang =
-      startTime.getHours() < 14 && endTime.getHours() >= 11;
-    autoChecked.value.snackSore = endTime.getHours() >= 14;
+    autoChecked.value.snackPagi = start.getHours() < 11;
+    autoChecked.value.makanSiang = start.getHours() < 14 && end.getHours() >= 11;
+    autoChecked.value.snackSore = end.getHours() >= 14;
 
     const {
       totalNominalValue,
@@ -302,19 +305,22 @@ const handleSubmit = (e) => {
 
     totalNominal.value = totalNominalValue;
 
+    let newId = lastId.value + 1;
+    lastId.value = newId;
+
     const selectedRoom = rooms.value.find(
       (room) => room.id === selectedRoomId.value
     );
-    selectedRoomName.value = selectedRoom ? selectedRoom.roomName : "";
+    selectedRoomName.value = selectedRoom ? selectedRoom.roomName : '';
 
     const data = {
+      id: newId,
       officeId: selectedOfficeId.value,
-      roomId: selectedRoomId.value,
       roomCapacity: selectedRoomCapacity.value,
       participantCount: participantCount.value,
-      tanggalRapat: tanggalRapat.value,
-      waktuMulai: waktuMulai.value,
-      waktuSelesai: waktuSelesai.value,
+      meetingDate: meetingDate.value,
+      startTime: startTime.value,
+      finishTime: finishTime.value,
       autoChecked: autoChecked.value,
       totalNominal: totalNominal.value,
       snackPagiCount: totalSnackPagi,
@@ -326,16 +332,16 @@ const handleSubmit = (e) => {
     meetingStore.saveMeetingData(data);
 
     Swal.fire({
-      icon: "success",
-      title: "Formulir Valid",
-      text: "Formulir berhasil disimpan.",
+      icon: 'success',
+      title: 'Formulir Valid',
+      text: 'Formulir berhasil disimpan.',
     });
   }
 };
 
 const formatNominal = (nominal) => {
-  if (typeof nominal === "number") {
-    return nominal.toLocaleString("id-ID");
+  if (typeof nominal === 'number') {
+    return nominal.toLocaleString('id-ID');
   }
   return nominal;
 };
@@ -370,22 +376,19 @@ const calculateNominal = () => {
 };
 
 const goBack = () => {
-  router.push("/meeting");
+  router.push('/meeting');
 };
 
 onMounted(async () => {
   try {
-    const officeResponse = await axios.get(
-      "https://6666c7aea2f8516ff7a4e261.mockapi.io/api/dummy-data/masterOffice"
-    );
-    offices.value = officeResponse.data;
+    await meetingStore.fetchAllData();
 
-    const roomResponse = await axios.get(
-      "https://6666c7aea2f8516ff7a4e261.mockapi.io/api/dummy-data/masterMeetingRooms"
-    );
-    rooms.value = roomResponse.data;
+    offices.value = meetingStore.offices;
+    rooms.value = meetingStore.rooms;
+    isLoading.value = false;
   } catch (error) {
-    console.error("Error fetching data", error);
+    console.error('Error fetching data', error);
+    isLoading.value = false;
   }
 });
 
@@ -393,14 +396,14 @@ watch(selectedRoomId, (newId) => {
   const room = rooms.value.find((room) => room.id === newId);
   if (room) {
     selectedRoomCapacity.value = room.capacity;
-    selectedRoomName.value = room.name;
+    selectedRoomName.value = room.roomName;
   }
 });
 </script>
 
 <style>
 .meeting-container {
-  padding: 8px 20px;
+  padding: 0.25em;
 }
 
 .meeting-header {
@@ -408,7 +411,7 @@ watch(selectedRoomId, (newId) => {
   display: flex;
   justify-content: space-between;
   align-items: start;
-  margin-bottom: 20px;
+  margin-bottom: 1.25em;
 }
 
 .back-and-title {
@@ -418,12 +421,12 @@ watch(selectedRoomId, (newId) => {
 
 .back-button-wrapper {
   display: flex;
-  margin-right: 20px;
+  margin-right: 1.25em;
   background-color: #027887;
-  border-radius: 10px;
+  border-radius: 0.625em;
   cursor: pointer;
-  width: 50px;
-  height: 45px;
+  width: 2.75em;
+  height: 2.5em;
 }
 
 .back-button {
@@ -433,7 +436,6 @@ watch(selectedRoomId, (newId) => {
   align-items: center;
   border: none;
   color: white;
-  font-size: 24px;
   margin: 0 auto;
 }
 
@@ -451,83 +453,94 @@ watch(selectedRoomId, (newId) => {
 .title-path-container {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .inline-title {
   margin: 0;
+  color: rgb(50, 50, 50);
 }
 
 .meeting-path {
-  color: #027887;
+  display: flex;
+  align-items: center;
   text-decoration: none;
+  gap: 0.5em;
+}
+
+.meeting-path span {
+  color: rgb(50, 50, 50);
+}
+
+.meeting-path .active {
+  color: #027887;
 }
 
 .pesan-button {
-  background-color: #027887;
-  color: white;
-  padding: 10px 20px;
-  font-size: 20px;
-  border-radius: 5px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   text-decoration: none;
   justify-content: center;
+  background-color: #027887;
+  padding: 0.5em 0.75em;
+  border-radius: 0.5em;
+  margin-top: 0.25em;
+  color: white;
+  cursor: pointer;
 }
 
 .pesan-button .fa-plus {
-  margin-right: 16px;
+  margin-right: 1em;
 }
 
 .form-container {
-  margin-top: 20px;
+  margin-top: 1.25em;
 }
 
 .meeting-form {
   display: flex;
   flex-direction: column;
-  border: 1px solid lightgray;
-  border-radius: 20px;
-  padding: 16px;
+  border: 0.0625em solid lightgray;
+  border-radius: 0.5em;
+  padding: 1em 1.5em;
 }
 
 .meeting-form label {
   font-weight: bold;
 }
 
-.meeting-form h2 {
-  margin: 20px 0;
+.meeting-form h3 {
+  margin-bottom: 1em;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 0.9375em;
 }
 
 .form-group label {
-  margin-bottom: 8px;
+  margin-bottom: 0.5em;
   display: block;
 }
 
 .form-nominal label {
-  margin-bottom: 8px;
+  margin-bottom: 0.5em;
   display: block;
 }
 
 .form-group input,
 .form-group select {
-  border: 1px solid lightgray;
+  border: 0.0625em solid lightgray;
   box-sizing: border-box;
-  border-radius: 10px;
-  width: 300px;
-  height: 50px;
-  padding: 8px;
+  border-radius: 0.625em;
+  width: 18.75em;
+  padding: 0.5em;
 }
 
 .form-group input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
+  width: 1.5em;
+  height: 1.5em;
   accent-color: #027887;
-  margin-right: 8px;
+  margin-right: 0.5em;
 }
 
 .checkbox-group {
@@ -536,10 +549,10 @@ watch(selectedRoomId, (newId) => {
 }
 
 .checkbox-item input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
+  width: 1.5em;
+  height: 1.5em;
   accent-color: #027887;
-  margin-right: 8px;
+  margin-right: 0.5em;
 }
 
 .checkbox-item label {
@@ -550,52 +563,64 @@ watch(selectedRoomId, (newId) => {
 .checkbox-item {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0.5em;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
+  gap: 1em;
 }
 
 .group-nominal {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 1em;
 }
 
 .currency-label {
-  padding: 0.5em;
   background-color: #f0f0f0;
-  border: 1px solid #ccc;
+  border: 0.0625em solid #ccc;
+  border-radius: 0.625em 0 0 0.625em;
   border-right: none;
-  height: 50px;
-  border-radius: 10px 0 0 10px;
+  padding: 0.5em;
 }
 
 .input-field {
-  border: 1px solid #ccc;
+  border: 0.0625em solid #ccc;
   border-left: none;
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 0.625em 0.625em 0;
   padding: 0.5em;
-  height: 50px;
-  width: 270px;
+  width: 16.875em;
+}
+
+select {
+  &:invalid {
+    color: gray;
+  }
+
+  [disabled] {
+    color: gray;
+  }
+
+  option {
+    color: black;
+  }
 }
 
 .form-divider {
   border: 0;
-  border-top: 1px solid lightgray;
-  margin: 20px 0;
+  border-top: 0.0625em solid lightgray;
+  margin: 1.25em 0;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 0.625em;
 }
 
 .form-actions button {
-  padding: 10px 20px;
+  padding: 0.625em 1.25em;
   cursor: pointer;
 }
 
@@ -619,20 +644,16 @@ watch(selectedRoomId, (newId) => {
 
 .swal2-confirm {
   background-color: #009fb5 !important;
-  color: white !important; 
-  border-radius: 10px;
-  width: 150px;
+  color: white !important;
+  border-radius: 0.625em;
+  width: 9.375em;
 }
 
 .swal2-cancel {
-  background-color: red !important; 
-  color: white !important; 
-  border-radius: 10px; 
+  background-color: red !important;
+  color: white !important;
+  border-radius: 0.625em;
 }
-
-/* .swal2-title {
-  color: #027887; 
-} */
 
 .swal2-content {
   color: #333;
